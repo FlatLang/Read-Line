@@ -1,0 +1,40 @@
+package flat/readline
+
+class {
+  public static async question(String question) -> String => null {
+    native var Char[] data
+
+    external {
+      return new Promise((resolve) => {
+        #{ReadLineGlobal.readline}.question(#{question.chars.data}, (value) => {
+          #{data} = value;
+          resolve(#{String(data)});
+          #{ReadLineGlobal.readline}.close();
+        });
+      });
+    }
+  }
+
+  public static class ReadLineGlobal {
+    external type ReadLineType
+    private static var ReadLineType _readline
+    visible static ReadLineType readline {
+      get {
+        external {
+          if (!#{_readline}) {
+            #{_readline} = require('readline').createInterface({
+              input: process.stdin,
+              output: process.stdout
+            });
+
+            #{_readline}.on("close", () => {
+              #{_readline} = null;
+            });
+          }
+        }
+
+        return _readline;
+      }
+    }
+  }
+}

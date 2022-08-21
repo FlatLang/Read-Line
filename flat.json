@@ -1,0 +1,26 @@
+{
+  "name": "Read Line",
+  "version": "0.1.0",
+  "description": "Flat Basic CLI Input Library",
+  "author": "Braden Steffaniak",
+  "license": "ISC",
+  "defaultTarget": "es6",
+  "scripts": {
+    "test": "node dist/test.js"
+  },
+  "main": {
+    "source": "src",
+    "dependencies": {
+      "github:FlatLang/Datastruct": "master",
+      "github:FlatLang/IO": "master",
+      "github:FlatLang/Logger": "master"
+    }
+  },
+  "test": {
+    "mainClass": "flat/ReadLine_TestSuite",
+    "source": "src",
+    "dependencies": {
+      "github:FlatLang/Nest": "master"
+    }
+  }
+}
