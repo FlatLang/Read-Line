@@ -1,17 +1,41 @@
 package flat/readline
 
+import flat/log/Logger
+
 class {
-  public static async question(String question) -> String => null {
+  let static Logger log = Logger(ReadLine.class)
+
+  public static async question(
+    String question,
+    responseMatcher(String) -> Bool = { true },
+    String invalidResponseMessage = null
+  ) -> String => null {
     native var Char[] data
+    var String response
 
     external {
-      return new Promise((resolve) => {
+      await new Promise((resolve) => {
         #{ReadLineGlobal.readline}.question(#{question.chars.data}, (value) => {
           #{data} = value;
-          resolve(#{String(data)});
+          #{response} = #{String(data)};
+          resolve(#{response});
           #{ReadLineGlobal.readline}.close();
         });
       });
+    }
+
+    return if (responseMatcher(response)) {
+      response
+    } else {
+      if (invalidResponseMessage) {
+        log.info(invalidResponseMessage)
+      }
+
+      question(
+        question,
+        responseMatcher,
+        invalidResponseMessage
+      )
     }
   }
 
