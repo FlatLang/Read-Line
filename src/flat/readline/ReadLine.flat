@@ -5,9 +5,39 @@ import flat/log/Logger
 class {
   let static Logger log = Logger(ReadLine.class)
 
+  public static async boolQuestion(
+    String value,
+    String invalidResponseMessage = null
+  ) =>
+    Bool.fromString(question(
+      value,
+      {
+        match _.toLowerCase() {
+          "y" => return true
+          "yes" => return true
+          "n" => return true
+          "no" => return true
+        }
+
+        return false
+      },
+      {
+        match _ {
+          "y" => return "true"
+          "yes" => return "true"
+          "n" => return "false"
+          "no" => return "false"
+        }
+
+        return "false"
+      },
+      invalidResponseMessage ?: "Invalid answer. Please respond with 'y' or 'n'"
+    ))
+
   public static async question(
-    String question,
+    String value,
     responseMatcher(String) -> Bool = { true },
+    responseMapper(String) -> String = { _ },
     String invalidResponseMessage = null
   ) -> String => null {
     native var Char[] data
@@ -15,7 +45,7 @@ class {
 
     external {
       await new Promise((resolve) => {
-        #{ReadLineGlobal.readline}.question(#{question.chars.data}, (value) => {
+        #{ReadLineGlobal.readline}.question(#{value.chars.data}, (value) => {
           #{data} = value;
           #{response} = #{String(data)};
           resolve(#{response});
@@ -25,15 +55,16 @@ class {
     }
 
     return if (responseMatcher(response)) {
-      response
+      responseMapper(response)
     } else {
       if (invalidResponseMessage) {
         log.info(invalidResponseMessage)
       }
 
       question(
-        question,
+        value,
         responseMatcher,
+        responseMapper,
         invalidResponseMessage
       )
     }
