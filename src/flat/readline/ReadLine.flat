@@ -40,7 +40,7 @@ class {
     responseMapper(String) -> String = { _ },
     String invalidResponseMessage = null
   ) -> String => null {
-    native var Char[] data
+    native_array native var Char[] data
     var String response
 
     external {
