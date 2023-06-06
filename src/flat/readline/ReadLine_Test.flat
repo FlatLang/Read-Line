@@ -3,9 +3,9 @@ package flat/readline
 import flat/readline/ReadLine
 
 testable class {
-  test `can create`() {
-    let value = ReadLine()
+    test `can create`() {
+        let value = ReadLine()
 
-    expect(value).toNotBe(null)
-  }
+        expect(value).toNotBe(null)
+    }
 }
